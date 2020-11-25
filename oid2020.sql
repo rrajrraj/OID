@@ -1,7 +1,10 @@
 
+REM
+REM  Transforms LDAP data into a 'comma-separated' spreadsheet
+REM   Can be used to create LOAD data
 set echo off newp 0 spa 0 pages 0 feedback off head off tab off ver off lines 250 trimspool on
 spool oid.csv
-select 'uid,lastname,firstname,middlename,email,idcardcn,edipi,orgid,orgaff,authid,sigid,personaemail,rank,sponsorfn,sponsorln,sponsorphone,sponsoremail' FROM DUAL;
+select 'uid,lastname,firstname,middlename,email,idcardcn,edipi,orgid,attributes' FROM DUAL;
 SELECT
 rtrim(
 rtrim(ltrim(upper(substr(G.rdn,4,50)))) ||','||
@@ -11,16 +14,16 @@ rtrim(ltrim(C.attrval)) ||','||
 rtrim(ltrim(D.attrval)) ||','||
 rtrim(ltrim(F.attrval)) ||','||
 rtrim(ltrim(H.attrval)) ||','||
-rtrim(ltrim(nvl(J.attrval,'1727'))) ||','||
+rtrim(ltrim(nvl(J.attrval,'abcd'))) ||','||
 rtrim(ltrim(K.attrval)) || ','||
 rtrim(ltrim(M.attrval)) || ','||
 rtrim(ltrim(N.attrval)) || ','||
 rtrim(ltrim(O.attrval)) || ','||
-L.usr_udf_xxmcrank || ','||
-L.usr_udf_xxmcsponsorfirstname || ',' ||
-L.usr_udf_xxmcsponsorlastname || ',' ||
-L.usr_udf_xxmcsponsorphoneno || ',' ||
-L.usr_udf_xxmcsponsoremail||' '
+L.usr_udf_attr1 || ','||
+L.usr_udf_attr2 || ',' ||
+L.usr_udf_attr3 || ',' ||
+L.usr_udf_attr4|| ',' ||
+L.usr_udf_attr5||' '
 ) ONELINE
 from ods.ds_attrstore A,
 ods.ds_attrstore B,
@@ -47,7 +50,7 @@ and K.entryid(+)=G.entryid
 and M.entryid(+)=G.entryid
 and N.entryid(+)=G.entryid
 and O.entryid(+)=G.entryid
-and G.parentdn='dc=mil,dc=gcssmc,cn=users,'
+and G.parentdn='dc=com,dc=mycompany,cn=users,'
 and A.attrkind(+)='u'
 and B.attrkind(+)='u'
 and C.attrkind(+)='u'
@@ -63,13 +66,13 @@ and A.attrname(+)='sn'
 and B.attrname(+)='givenname'
 and C.attrname(+)='middlename'
 and D.attrname(+)='mail'
-and F.attrname(+)='xxmcidcardcn'
-and H.attrname(+)='xxmcdodedipersonid'
-and K.attrname(+)='xxmcpersoncategorycode'
-and M.attrname(+)='xxmcauthid'
-and N.attrname(+)='xxmcsigid'
-and O.attrname(+)='xxmcpersonaemail'
-and J.attrname(+)='xxmcbranchofservicecode'
+and F.attrname(+)='attr1'
+and H.attrname(+)='attr2'
+and K.attrname(+)='attr3'
+and M.attrname(+)='attr4'
+and N.attrname(+)='attr5'
+and O.attrname(+)='attr6'
+and J.attrname(+)='attr7'
 and L.usr_login(+)=upper(substr(G.rdn,4,50))
  order by 1
 /
